@@ -6,11 +6,16 @@ export const createUser = async (req, res) => {
     try {
         const { names,  password, email } = req.body;
         const hashedPassword = await hashPassword(password);
+        const existingEmail = await User.findOne({ where: { email } });
+        if (existingEmail) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+    
         const user = await User.create({ names, password: hashedPassword, email });
-        const token = generateToken(user);
+        
         res.status(201).json({ 
-            message:"User created successfully",
-            data:{token} });
+            message:"User created successfully, you can login now"
+             });
     } catch (error) {
         res.status(500).json({ 
             message:"failed to create user",

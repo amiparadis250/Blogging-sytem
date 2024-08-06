@@ -43,9 +43,6 @@ const User = sequelize.define('User', {
   tableName: 'users',
 });
 
-User.associate = (models) => {
-  User.hasMany(models.Blog, { foreignKey: 'bloggerId', as: 'blogs' });
-  User.hasMany(models.Comment, { foreignKey: 'commenterId', as: 'comments' });
-};
+
 
 export default User;

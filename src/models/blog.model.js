@@ -49,9 +49,6 @@ const Blog = sequelize.define('Blog', {
   tableName: 'blogs',
 });
 
-Blog.associate = (models) => {
-  Blog.belongsTo(models.User, { foreignKey: 'bloggerId', as: 'blogger' });
-  Blog.hasMany(models.Comment, { foreignKey: 'blogId', as: 'comments' });
-};
+
 
 export default Blog;

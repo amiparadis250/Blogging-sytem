@@ -55,21 +55,24 @@ export const createBlog = async (req, res) => {
     }
   });
 };
-
 export const getBlogWithCommentsAndCreator = async (req, res) => {
   try {
     const { blogId } = req.params;
 
     const blog = await Blog.findByPk(blogId, {
       include: [
-        
+        {
+          model: User,
+          as: 'blogger',
+          attributes: ['id', 'names', 'email']
+        },
         {
           model: Comment,
           as: 'comments',
           include: [
             {
               model: User,
-              as: 'commenter',
+              as: 'commenters',
               attributes: ['id', 'names', 'email']
             }
           ]
@@ -81,8 +84,12 @@ export const getBlogWithCommentsAndCreator = async (req, res) => {
       return res.status(404).json({ message: 'Blog not found' });
     }
 
-    res.status(200).json(blog);
+    res.status(200).json({
+      message: "Blog fetched successfully",
+      data: blog
+    });
   } catch (error) {
+    console.error('Error in getBlogWithCommentsAndCreator:', error);
     res.status(500).json({ message: 'Error fetching blog', error: error.message });
   }
 };
@@ -91,14 +98,18 @@ export const getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.findAll({
       include: [
-
+        {
+          model: User,
+          as: 'blogger',
+          attributes: ['id', 'names', 'email']
+        },
         {
           model: Comment,
           as: 'comments',
           include: [
             {
               model: User,
-              as: 'commenter',
+              as: 'commenters',
               attributes: ['id', 'names', 'email']
             }
           ]
@@ -106,9 +117,12 @@ export const getAllBlogs = async (req, res) => {
       ]
     });
 
-    res.status(200).json(blogs);
+    res.status(200).json({
+      message: "Blogs fetched successfully",
+      data: blogs
+    });
   } catch (error) {
-    console.log(error); 
+    console.error('Error in getAllBlogs:', error);
     res.status(500).json({ message: 'Error fetching blogs', error: error.message });
   }
 };
