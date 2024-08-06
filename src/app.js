@@ -2,9 +2,15 @@ import express from 'express';
 import userRoutes from "./routes/user.routes";
 import blogRoutes from "./routes/blog.routes";
 import bodyParser from "body-parser";
+import User from './models/user.model.js';
+import Blog from './models/blog.model.js';
+import Comment from './models/comments.model.js';
+import associateModels from './models/associateModels.js';
 
 
 const app = express();
+const models = { User, Blog, Comment };
+associateModels(models);
 
 
 app.use(bodyParser.json());

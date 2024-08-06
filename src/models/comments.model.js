@@ -55,9 +55,5 @@ const Comment = sequelize.define('Comment', {
   tableName: 'comments',
 });
 
-Comment.associate = (models) => {
-  Comment.belongsTo(models.User, { foreignKey: 'commenterId', as: 'commenter' });
-  Comment.belongsTo(models.Blog, { foreignKey: 'blogId' });
-};
 
 export default Comment;
