@@ -2,8 +2,9 @@ import Comment from '../models/comments.model.js';
 import User from '../models/user.model.js';
 
 export const createComment = async (req, res) => {
+  const {blogId} = req.params;
   try {
-    const { blogId, content } = req.body;
+    const { content } = req.body;
     const commenterId = req.user.id; 
 
     const user = await User.findByPk(commenterId);
