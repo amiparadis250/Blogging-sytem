@@ -8,7 +8,7 @@ export const createUser = async (req, res) => {
         const hashedPassword = await hashPassword(password);
         const existingEmail = await User.findOne({ where: { email } });
         if (existingEmail) {
-            return res.status(401).json({ message: "Invalid email or password" });
+            return res.status(409).json({ message: "The user already exists" });
         }
     
         const user = await User.create({ names, password: hashedPassword, email });
