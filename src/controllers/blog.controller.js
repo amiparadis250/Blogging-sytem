@@ -95,7 +95,9 @@ export const getBlogWithCommentsAndCreator = async (req, res) => {
     });
 
     if (!blog) {
-      return res.status(404).json({ message: 'Blog not found' });
+      return res.status(404).json({ 
+        message: 'Blog not found' 
+      });
     }
 
     res.status(200).json({
@@ -139,4 +141,79 @@ export const getAllBlogs = async (req, res) => {
     console.error('Error in getAllBlogs:', error);
     res.status(500).json({ message: 'Error fetching blogs', error: error.message });
   }
+};
+export const deleteBlog = async (req, res) => {
+  const { blogId } = req.params;
+  try {
+    const blog = await Blog.findByPk(blogId);
+    
+    if (!blog) {
+      return res.status(404).json({
+        message: 'Blog not found'
+      });
+    }
+
+    await blog.destroy();
+    
+    res.status(200).json({ 
+      message: 'Blog deleted successfully'
+    });
+  }
+  catch (error) {
+    console.error('Error in deleteBlog:', error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+export const updateBlog = async (req, res) => {
+  upload.single('image')(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ message: 'Error uploading file', error: err.message });
+    }
+
+    const { blogId } = req.params;
+    const bloggerId = req.user?.id;
+    const { title, content } = req.body;
+
+    try {
+      const blog = await Blog.findByPk(blogId);
+
+      if (!blog) {
+        return res.status(404).json({
+          message: 'Blog not found'
+        });
+      }
+
+     
+      if (blog.bloggerId !== bloggerId) {
+        return res.status(403).json({
+          message: 'You are not authorized to update this blog'
+        });
+      }
+
+  
+      if (req.file) {
+        const image = await uploadImage(req.file.path, 'Blog-thumbnails');
+        blog.image = image;
+      }
+
+      if (title) blog.title = title;
+      if (content) blog.content = content;
+
+      await blog.save();
+
+      res.status(200).json({
+        message: 'Blog updated successfully',
+        data: blog
+      });
+    } catch (error) {
+      console.error('Error in updateBlog:', error);
+      res.status(500).json({
+        message: 'Error updating blog',
+        error: error.message
+      });
+    }
+  });
 };
