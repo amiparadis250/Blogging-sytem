@@ -40,5 +40,7 @@ Installation
 Clone the repository and navigate to the project directory:
 git clone https://github.com/yourusername/blog-system-api.git
 cd blog-system-api`
+git clone https://github.com/yourusername/blog-system-api.git
+cd blog-system-api
 
 Run the setup script:
